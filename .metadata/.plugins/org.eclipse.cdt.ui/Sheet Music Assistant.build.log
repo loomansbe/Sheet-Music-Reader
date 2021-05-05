@@ -1,0 +1,10 @@
+14:53:04 **** Incremental Build of configuration Debug for project Sheet Music Assistant ****
+make -j4 all 
+arm-none-eabi-size   Sheet\ Music\ Assistant.elf 
+   text	   data	    bss	    dec	    hex	filename
+  95976	    252	 141252	 237480	  39fa8	Sheet Music Assistant.elf
+Finished building: default.size.stdout
+ 
+
+14:53:07 Build Finished. 0 errors, 0 warnings. (took 2s.290ms)
+
