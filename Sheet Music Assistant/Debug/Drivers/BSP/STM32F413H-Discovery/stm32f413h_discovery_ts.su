@@ -1,0 +1,5 @@
+stm32f413h_discovery_ts.c:116:9:BSP_TS_Init	16	static
+stm32f413h_discovery_ts.c:130:9:BSP_TS_InitEx	24	static
+stm32f413h_discovery_ts.c:188:9:BSP_TS_ITConfig	16	static
+stm32f413h_discovery_ts.c:213:9:BSP_TS_GetState	48	static
+stm32f413h_discovery_ts.c:394:13:BSP_TS_INT_MspInit	32	static

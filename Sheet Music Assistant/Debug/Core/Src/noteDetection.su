@@ -1,0 +1,9 @@
+noteDetection.c:30:6:checkNoteSpace	40	static
+noteDetection.c:55:13:findNotes	80	static
+noteDetection.c:111:6:findLines	56	static
+noteDetection.c:157:6:lineToNoteType	16	static
+noteDetection.c:181:6:spaceToNote	16	static
+noteDetection.c:201:6:checkBetweenLines	40	static
+noteDetection.c:219:13:determineNoteTypes	40	static
+noteDetection.c:237:13:findFlags	1016	static
+noteDetection.c:326:6:outputNoteLetters	72	dynamic

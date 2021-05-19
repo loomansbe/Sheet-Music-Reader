@@ -1,0 +1,8 @@
+stm32f413h_discovery_psram.c:100:9:BSP_PSRAM_Init	8	static
+stm32f413h_discovery_psram.c:148:9:BSP_PSRAM_DeInit	8	static
+stm32f413h_discovery_psram.c:177:9:BSP_PSRAM_ReadData	24	static
+stm32f413h_discovery_psram.c:196:9:BSP_PSRAM_ReadData_DMA	24	static
+stm32f413h_discovery_psram.c:215:9:BSP_PSRAM_WriteData	24	static
+stm32f413h_discovery_psram.c:234:9:BSP_PSRAM_WriteData_DMA	24	static
+stm32f413h_discovery_psram.c:251:13:BSP_PSRAM_MspInit	64	static
+stm32f413h_discovery_psram.c:335:13:BSP_PSRAM_MspDeInit	16	static
