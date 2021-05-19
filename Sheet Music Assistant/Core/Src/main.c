@@ -25,6 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdbool.h>
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -70,28 +71,28 @@ SRAM_HandleTypeDef hsram2;
 osThreadId_t blink01Handle;
 const osThreadAttr_t blink01_attributes = {
   .name = "blink01",
-  .priority = (osPriority_t) osPriorityLow,
+  .priority = (osPriority_t) osPriorityBelowNormal,
   .stack_size = 128 * 4
 };
 /* Definitions for blink02 */
 osThreadId_t blink02Handle;
 const osThreadAttr_t blink02_attributes = {
   .name = "blink02",
-  .priority = (osPriority_t) osPriorityLow,
+  .priority = (osPriority_t) osPriorityBelowNormal,
   .stack_size = 128 * 4
 };
 /* Definitions for buttonPoll */
 osThreadId_t buttonPollHandle;
 const osThreadAttr_t buttonPoll_attributes = {
   .name = "buttonPoll",
-  .priority = (osPriority_t) osPriorityLow,
+  .priority = (osPriority_t) osPriorityBelowNormal,
   .stack_size = 128 * 4
 };
 /* Definitions for displayImage */
 osThreadId_t displayImageHandle;
 const osThreadAttr_t displayImage_attributes = {
   .name = "displayImage",
-  .priority = (osPriority_t) osPriorityBelowNormal,
+  .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 128 * 4
 };
 /* USER CODE BEGIN PV */
@@ -100,8 +101,16 @@ char SD_Path[4]; /* SD card logical drive path */
 char* pDirectoryFiles[MAX_BMP_FILES];
 uint8_t  ubNumberOfFiles = 0;
 uint32_t uwBmplen = 0;
-
-uint8_t uwInternelBuffer[LCD_SCREEN_WIDTH*LCD_SCREEN_HEIGHT*RGB565_BYTE_PER_PIXEL];
+typedef struct Buffer {
+	uint8_t uwInternelBuffer[LCD_SCREEN_WIDTH*LCD_SCREEN_HEIGHT*RGB565_BYTE_PER_PIXEL];
+} Buffer;
+Buffer bufferArray[MAX_BMP_FILES];
+uint32_t counter = 0;
+uint8_t count = 0;
+uint8_t str[30];
+bool sdStatus = false;
+bool initialized = false;
+bool prevState = false;
 
 /* USER CODE END PV */
 
@@ -125,17 +134,13 @@ void StartBlink02(void *argument);
 void StartButtonPoll(void *argument);
 void StartDisplayImage(void *argument);
 
+static void MX_NVIC_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-	uint32_t counter = 0;
-	uint8_t str[30];
-	bool changeImage = true;
-	bool sdStatus = false;
-	bool buttonState = false;
 /* USER CODE END 0 */
 
 /**
@@ -178,25 +183,28 @@ int main(void)
   MX_UART10_Init();
   MX_USART6_UART_Init();
   MX_I2C2_Init();
+
+  /* Initialize interrupts */
+  MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
 
   /* LCD Initialization */
     BSP_LCD_Init();
 
-    /* Clear the LCD */
+     //Clear the LCD
     BSP_LCD_Clear(LCD_COLOR_WHITE);
 
-    /* Configure Key Button */
+     //Configure Key Button
     BSP_PB_Init(BUTTON_WAKEUP, BUTTON_MODE_GPIO);
 
-    /* SD Initialization */
+     //SD Initialization
     BSP_SD_Init();
 
-    /* Set the font Size */
+     //Set the font Size
     BSP_LCD_SetFont(&Font16);
-    /* Set the Text Color */
+     //Set the Text Color
     BSP_LCD_SetTextColor(LCD_COLOR_RED);
-    /* Set the Back Color */
+     //Set the Back Color
     BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
 
     while(BSP_SD_IsDetected() != SD_PRESENT)
@@ -204,13 +212,13 @@ int main(void)
         BSP_LCD_DisplayStringAt(0, 112, (uint8_t*)"Starting Project...", CENTER_MODE);
       }
     sdStatus = true;
-    /* Clear the LCD */
+     //Clear the LCD
       BSP_LCD_Clear(LCD_COLOR_WHITE);
 
-      /*##-2- Link the SD Card disk I/O driver ###################################*/
+      //##-2- Link the SD Card disk I/O driver ###################################
       if(FATFS_LinkDriver(&SD_Driver, SD_Path) == 0)
       {
-        /*##-3- Initialize the Directory Files pointers (heap) ###################*/
+        //##-3- Initialize the Directory Files pointers (heap) ###################
         for (counter = 0; counter < MAX_BMP_FILES; counter++)
         {
           pDirectoryFiles[counter] = malloc(MAX_BMP_FILE_NAME);
@@ -220,8 +228,8 @@ int main(void)
           }
         }
 
-        /* Get the BMP file names on root directory */
-        ubNumberOfFiles = Storage_GetDirectoryBitmapFiles("/Media", pDirectoryFiles);
+         //Get the BMP file names on root directory
+        ubNumberOfFiles = Storage_GetDirectoryBitmapFiles("/Music", pDirectoryFiles);
 
         if (ubNumberOfFiles == 0)
         {
@@ -235,52 +243,51 @@ int main(void)
       }
       else
       {
-        /* FatFs Initialization Error */
+         //FatFs Initialization Error
       }
 
       counter = 0;
 
-      /*
-      while(BSP_SD_IsDetected())
-        {
-          counter = 0;
 
-          while (counter < ubNumberOfFiles)
-          {
+      if(BSP_SD_IsDetected())
+        {
+    	  while(counter < MAX_BMP_FILES)
+    	  {
              //Format the string
-            sprintf ((char*)str, "Media/%-11.11s", pDirectoryFiles[counter]);
+            sprintf ((char*)str, "Music/%-11.11s", pDirectoryFiles[counter]);
 
             if (Storage_CheckBitmapFile((const char*)str, &uwBmplen) == 0)
             {
               // Open a file and copy its content to an internal buffer
-              Storage_OpenReadFile(uwInternelBuffer, (const char*)str);
+              Storage_OpenReadFile(bufferArray[counter].uwInternelBuffer, (const char*)str);
 
                //Write bmp file on LCD frame buffer
-              BSP_LCD_DrawBitmap(0, 0, uwInternelBuffer);
+              //BSP_LCD_DrawBitmap(0, 0, bufferArray[counter].uwInternelBuffer);
 
                //Wait for Key button pressed
-              while (BSP_PB_GetState(BUTTON_WAKEUP) == RESET)
-              {
-              }
+              //while (BSP_PB_GetState(BUTTON_WAKEUP) == RESET)
+              //{
+              //}
 
                //Wait for Key button released
-              while (BSP_PB_GetState(BUTTON_WAKEUP) == SET)
-              {
-              }
+              //while (BSP_PB_GetState(BUTTON_WAKEUP) == SET)
+              //{
+              //}
 
                //Clear the LCD
-              BSP_LCD_Clear(LCD_COLOR_BLACK);
 
-              while(BSP_SD_IsDetected() != SD_PRESENT)
-              {
-                BSP_LCD_DisplayStringAt(0, 112, (uint8_t*)"Please insert SD Card  ", CENTER_MODE);
-                BSP_LCD_DisplayStringAt(0, 128, (uint8_t*)"Reset the board        ", CENTER_MODE);
-              }
+              //while(BSP_SD_IsDetected() != SD_PRESENT)
+              //{
+              //  BSP_LCD_DisplayStringAt(0, 112, (uint8_t*)"Please insert SD Card  ", CENTER_MODE);
+              //  BSP_LCD_DisplayStringAt(0, 128, (uint8_t*)"Reset the board        ", CENTER_MODE);
+              //}
                //Jump to the next image
               counter++;
             }
-          }
-        }*/
+    	  }
+        }
+      counter = 0;
+      count = -1;
 
   /* USER CODE END 2 */
 
@@ -397,6 +404,17 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief NVIC Configuration.
+  * @retval None
+  */
+static void MX_NVIC_Init(void)
+{
+  /* EXTI0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 }
 
 /**
@@ -887,7 +905,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : PA0 */
   GPIO_InitStruct.Pin = GPIO_PIN_0;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
@@ -1081,7 +1099,7 @@ void StartBlink01(void *argument)
   for(;;)
   {
 	  HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_3);
-    osDelay(3000);
+	  osDelay(1000);
   }
   /* USER CODE END 5 */
 }
@@ -1100,7 +1118,7 @@ void StartBlink02(void *argument)
   for(;;)
   {
 	  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_5);
-    osDelay(2000);
+	  osDelay(500);
   }
   /* USER CODE END StartBlink02 */
 }
@@ -1119,16 +1137,11 @@ void StartButtonPoll(void *argument)
   for(;;)
   {
 	  bool buttonCurrent = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0);
-	  if(buttonState^buttonCurrent) {
-		  buttonState = buttonCurrent;
-
-		  if(buttonCurrent) {
-			  changeImage = true;
-			  counter = (counter+1)%ubNumberOfFiles;
-		  }
+	  if(buttonCurrent && !prevState) {
+		  counter = (counter+1)%ubNumberOfFiles;
 	  }
-
-    osDelay(50);
+	  prevState = buttonCurrent;
+	  osDelay(50);
   }
   /* USER CODE END StartButtonPoll */
 }
@@ -1143,44 +1156,50 @@ void StartButtonPoll(void *argument)
 void StartDisplayImage(void *argument)
 {
   /* USER CODE BEGIN StartDisplayImage */
-  /* Infinite loop */
-  for(;;)
-  {
-	  BSP_LCD_Clear(LCD_COLOR_BLACK);
-	   //Format the string
-	  sprintf ((char*)str, "Media/%-11.11s", pDirectoryFiles[counter]);
+	/* Infinite loop */
+	for(;;)
+	{
 
-	  if (Storage_CheckBitmapFile((const char*)str, &uwBmplen) == 0)
-	  {
-		// Open a file and copy its content to an internal buffer
-		Storage_OpenReadFile(uwInternelBuffer, (const char*)str);
-
-		 //Write bmp file on LCD frame buffer
-		BSP_LCD_DrawBitmap(0, 0, uwInternelBuffer);
-
-		 //Wait for Key button pressed
-		//while (BSP_PB_GetState(BUTTON_WAKEUP) == RESET)
-		//{
-		//}
-
-		 //Wait for Key button released
-		//while (BSP_PB_GetState(BUTTON_WAKEUP) == SET)
-		//{
-		//}
-
-		 //Clear the LCD
-
-		while(BSP_SD_IsDetected() != SD_PRESENT)
+		//The following breaks some place between 1163 and 1166. It goes to Hard fault Handler for some unknown reason.
+		// * I bookmarked a debugging solution for the hard fault handler in courses->our course to potentially find the issue.
+		/*if(count != counter)
 		{
-		  BSP_LCD_DisplayStringAt(0, 112, (uint8_t*)"Please insert SD Card  ", CENTER_MODE);
-		  BSP_LCD_DisplayStringAt(0, 128, (uint8_t*)"Reset the board        ", CENTER_MODE);
-		}
-		 //Jump to the next image
-		//counter++;
-	  }
+			count = counter;
+			BSP_LCD_Clear(LCD_COLOR_WHITE);
+			//Format the string
+			sprintf ((char*)strng, "Music/%-11.11s", pDirectoryFiles[counter]);
 
-    osDelay(500);
-  }
+			// Open a file and copy its content to an internal buffer
+			Storage_OpenReadFile(uwInternelBuffer, (const char*)str);
+
+			 //Write bmp file on LCD frame buffer
+			BSP_LCD_DrawBitmap(0, 0, uwInternelBuffer);
+
+			 //Clear the LCD
+
+			if(BSP_SD_IsDetected() != SD_PRESENT)
+			{
+			  BSP_LCD_Clear(LCD_COLOR_WHITE);
+			  BSP_LCD_DisplayStringAt(0, 112, (uint8_t*)"Please insert SD Card  ", CENTER_MODE);
+			  BSP_LCD_DisplayStringAt(0, 128, (uint8_t*)"Reset the board        ", CENTER_MODE);
+			}
+		}*/
+
+		//I am thinking about researching using a 2D array for having the bitmap file data so we can get the contents before
+		//FreeRtos tasks happen then get the specific uwInternelBuffer for the counter to avoid the hard faults
+		//i.e.: I can use what is done in the example project basically to get the uwInternelBuffer for each image, then
+		//have an array of structs (like what is done in the image processing by BenV and Joshua) with a counter value and a buffer value.
+		//I can have the array initialized to have the MAX_BMP_FILES value and send in the buffer values when they are received. as well as the counter value.
+		//Then, I can simply draw the bitmap for the struct array of counter!
+		if (counter != count)
+		{
+			BSP_LCD_Clear(LCD_COLOR_WHITE);
+			BSP_LCD_DrawBitmap(0, 0, bufferArray[counter].uwInternelBuffer);
+			BSP_LCD_DisplayStringAt(0, 220, (uint8_t*)"No Bitmap files...", CENTER_MODE);
+			count = counter;
+		}
+		osDelay(250);
+	}
   /* USER CODE END StartDisplayImage */
 }
 

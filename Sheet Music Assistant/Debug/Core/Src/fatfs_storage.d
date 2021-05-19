@@ -1,7 +1,8 @@
 Core/Src/fatfs_storage.o: ../Core/Src/fatfs_storage.c \
- ../Core/Inc/fatfs_storage.h ../Middlewares/Third_Party/FatFs/src/ff.h \
- ../Middlewares/Third_Party/FatFs/src/integer.h ../Core/Inc/ffconf.h \
- ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
+ ../Core/Inc/fatfs_storage.h \
+ C:/Users/bnloo/Documents/Workspace/Sheet\ Music\ Assistant/Middlewares/Third_Party/FatFs/src/ff.h \
+ C:/Users/bnloo/Documents/Workspace/Sheet\ Music\ Assistant/Middlewares/Third_Party/FatFs/src/integer.h \
+ ../Core/Inc/ffconf.h ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h \
@@ -52,9 +53,9 @@ Core/Src/fatfs_storage.o: ../Core/Src/fatfs_storage.c \
 
 ../Core/Inc/fatfs_storage.h:
 
-../Middlewares/Third_Party/FatFs/src/ff.h:
+C:/Users/bnloo/Documents/Workspace/Sheet\ Music\ Assistant/Middlewares/Third_Party/FatFs/src/ff.h:
 
-../Middlewares/Third_Party/FatFs/src/integer.h:
+C:/Users/bnloo/Documents/Workspace/Sheet\ Music\ Assistant/Middlewares/Third_Party/FatFs/src/integer.h:
 
 ../Core/Inc/ffconf.h:
 

@@ -92,8 +92,8 @@ Sheet\ Music\ Assistant.bin \
 all: Sheet\ Music\ Assistant.elf secondary-outputs
 
 # Tool invocations
-Sheet\ Music\ Assistant.elf: $(OBJS) $(USER_OBJS) C:\Users\bnloo\Documents\Workspace\Sheet-Music-Reader\Sheet\ Music\ Assistant\STM32F413ZHTX_FLASH.ld
-	arm-none-eabi-g++ -o "Sheet Music Assistant.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\bnloo\Documents\Workspace\Sheet-Music-Reader\Sheet Music Assistant\STM32F413ZHTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Sheet Music Assistant.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Sheet\ Music\ Assistant.elf: $(OBJS) $(USER_OBJS) C:\Users\bnloo\Documents\Workspace\Sheet\ Music\ Assistant\STM32F413ZHTX_FLASH.ld
+	arm-none-eabi-g++ -o "Sheet Music Assistant.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\bnloo\Documents\Workspace\Sheet Music Assistant\STM32F413ZHTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Sheet Music Assistant.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

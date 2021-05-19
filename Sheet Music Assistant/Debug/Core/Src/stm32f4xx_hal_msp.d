@@ -51,12 +51,15 @@ Core/Src/stm32f4xx_hal_msp.o: ../Core/Src/stm32f4xx_hal_msp.c \
  c:\users\bnloo\documents\workspace\sheet\ music\ assistant\drivers\bsp\components\st7789h2\st7789h2.h \
  c:\users\bnloo\documents\workspace\sheet\ music\ assistant\drivers\bsp\components\common\lcd.h \
  c:\users\bnloo\documents\workspace\sheet\ music\ assistant\utilities\fonts\fonts.h \
- ../Core/Inc/fatfs_storage.h ../Middlewares/Third_Party/FatFs/src/ff.h \
- ../Middlewares/Third_Party/FatFs/src/integer.h ../Core/Inc/ffconf.h \
+ ../Core/Inc/fatfs_storage.h \
+ C:/Users/bnloo/Documents/Workspace/Sheet\ Music\ Assistant/Middlewares/Third_Party/FatFs/src/ff.h \
+ C:/Users/bnloo/Documents/Workspace/Sheet\ Music\ Assistant/Middlewares/Third_Party/FatFs/src/integer.h \
+ ../Core/Inc/ffconf.h \
  C:/Users/bnloo/Documents/Workspace/Sheet\ Music\ Assistant/Drivers/BSP/STM32F413H-Discovery/stm32f413h_discovery_sd.h \
- ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h \
- ../Middlewares/Third_Party/FatFs/src/diskio.h \
- ../Middlewares/Third_Party/FatFs/src/ff.h ../Core/Inc/sd_diskio.h
+ C:/Users/bnloo/Documents/Workspace/Sheet\ Music\ Assistant/Middlewares/Third_Party/FatFs/src/ff_gen_drv.h \
+ C:/Users/bnloo/Documents/Workspace/Sheet\ Music\ Assistant/Middlewares/Third_Party/FatFs/src/diskio.h \
+ C:/Users/bnloo/Documents/Workspace/Sheet\ Music\ Assistant/Middlewares/Third_Party/FatFs/src/ff.h \
+ ../Core/Inc/sd_diskio.h
 
 ../Core/Inc/main.h:
 
@@ -166,18 +169,18 @@ c:\users\bnloo\documents\workspace\sheet\ music\ assistant\utilities\fonts\fonts
 
 ../Core/Inc/fatfs_storage.h:
 
-../Middlewares/Third_Party/FatFs/src/ff.h:
+C:/Users/bnloo/Documents/Workspace/Sheet\ Music\ Assistant/Middlewares/Third_Party/FatFs/src/ff.h:
 
-../Middlewares/Third_Party/FatFs/src/integer.h:
+C:/Users/bnloo/Documents/Workspace/Sheet\ Music\ Assistant/Middlewares/Third_Party/FatFs/src/integer.h:
 
 ../Core/Inc/ffconf.h:
 
 C:/Users/bnloo/Documents/Workspace/Sheet\ Music\ Assistant/Drivers/BSP/STM32F413H-Discovery/stm32f413h_discovery_sd.h:
 
-../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h:
+C:/Users/bnloo/Documents/Workspace/Sheet\ Music\ Assistant/Middlewares/Third_Party/FatFs/src/ff_gen_drv.h:
 
-../Middlewares/Third_Party/FatFs/src/diskio.h:
+C:/Users/bnloo/Documents/Workspace/Sheet\ Music\ Assistant/Middlewares/Third_Party/FatFs/src/diskio.h:
 
-../Middlewares/Third_Party/FatFs/src/ff.h:
+C:/Users/bnloo/Documents/Workspace/Sheet\ Music\ Assistant/Middlewares/Third_Party/FatFs/src/ff.h:
 
 ../Core/Inc/sd_diskio.h:
